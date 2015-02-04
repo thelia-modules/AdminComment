@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<config xmlns="http://thelia.net/schema/dic/config"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://thelia.net/schema/dic/config http://thelia.net/schema/dic/config/thelia-1.0.xsd">
+
+    <loops>
+        <!-- sample definition
+        <loop name="MySuperLoop" class="AdminComment\Loop\MySuperLoop" />
+        -->
+    </loops>
+
+    <forms>
+        <form name="admin_comment_create_form" class="AdminComment\Form\AdminCommentCreateForm" />
+        <form name="admin_comment_update_form" class="AdminComment\Form\AdminCommentUpdateForm" />
+    </forms>
+
+    <commands>
+        <!--
+        <command class="AdminComment\Command\MySuperCommand" />
+        -->
+    </commands>
+
+    <services>
+        <service id="action.admin_comment" class="AdminComment\Action\AdminCommentAction" scope="request">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+    </services>
+
+    <hooks>
+        <hook id="admincomment.hook" class="AdminComment\Hook\BackHook" scope="request">
+            <tag name="hook.event_listener" event="main.after-content" type="back" />
+            <tag name="hook.event_listener" event="main.footer-js" type="back" />
+            <tag name="hook.event_listener" event="category.edit-js" type="back" method="onEditJs" />
+            <tag name="hook.event_listener" event="product.edit-js" type="back" method="onEditJs" />
+            <tag name="hook.event_listener" event="folder.edit-js" type="back" method="onEditJs" />
+            <tag name="hook.event_listener" event="content.edit-js" type="back" method="onEditJs" />
+            <tag name="hook.event_listener" event="customer.edit-js" type="back" method="onEditJs" />
+            <tag name="hook.event_listener" event="order.edit-js" type="back" method="onEditJs" />
+            <tag name="hook.event_listener" event="coupon.update-js" type="back" method="onEditJs" />
+        </hook>
+    </hooks>
+
+    <!--
+    <exports>
+
+    </exports>
+    -->
+
+    <!--
+    <imports>
+
+    </imports>
+    -->
+</config>

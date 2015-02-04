@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <!-- back -->
+    <route id="admincomment.admin.list" path="/admin/module/AdminComment/list/{key}/{id}" methods="get">
+        <default key="_controller">AdminComment:AdminComment:list</default>
+        <requirement key="key">.+</requirement>
+        <requirement key="id">\d+</requirement>
+    </route>
+    <route id="admincomment.admin.create" path="/admin/module/AdminComment/create" methods="post">
+        <default key="_controller">AdminComment:AdminComment:create</default>
+    </route>
+    <route id="admincomment.admin.save" path="/admin/module/AdminComment/save" methods="post">
+        <default key="_controller">AdminComment:AdminComment:save</default>
+    </route>
+    <route id="admincomment.admin.delete" path="/admin/module/AdminComment/delete" methods="post">
+        <default key="_controller">AdminComment:AdminComment:delete</default>
+    </route>
+
+</routes>

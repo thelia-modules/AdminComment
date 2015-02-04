@@ -1,0 +1,90 @@
+<div id="admin-comment-wrapper" class="container hidden">
+    <div class="row">
+        <div class="col-md-12 general-block-decorator">
+            <div>
+                <div class="title">
+                    {intl l="Admin Comments" d="admincomment.bo.default"}
+                </div>
+            </div>
+            <div>
+                {form name="admin_comment_create_form"}
+                    <form id="admin-comment-form" method="post" action="{url path="/admin/module/AdminComment/create"}" {form_enctype form=$form}>
+
+                        {form_hidden_fields form=$form}
+
+                        {form_field form=$form field="admin_id"}
+                            <input type="hidden" name="{$name}" value="{admin attr="id"}">
+                        {/form_field}
+
+                        {form_field form=$form field="element_key"}
+                            <input type="hidden" id="admin-comment-form-key" name="{$name}" value="">
+                        {/form_field}
+
+                        {form_field form=$form field="element_id"}
+                            <input type="hidden" id="admin-comment-form-id" name="{$name}" value="">
+                        {/form_field}
+
+                        {form_field form=$form field="comment"}
+                        <div class="form-group">
+                            <textarea id="admin-comment-form-comment" name="{$name}" class="form-control">{$value}</textarea>
+                        </div>
+                        {/form_field}
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">{intl l="Save" d="admincomment.bo.default"}</button>
+                        </div>
+                    </form>
+                {/form}
+
+                <div id="admin-comment-list" class="list-group">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{* JS Templates *}
+<script id="tpl-admin-comment" type="text/html">
+<div class="list-group-item" data-id="<%= comment.id %>">
+    <h4 class="list-group-item-heading u-no-padding"><%= comment.admin %> (<%= comment.date %>)</h4>
+    <p class="list-group-item-text u-padding-bottom">
+        <%= comment.comment %>
+    </p>
+    {loop type="auth" name="can_change" role="ADMIN" module="admincomment" access="UPDATE"}
+    <div class="list-group-item-form hidden">
+        {form name="admin_comment_update_form"}
+            <form class="admin-comment-form" method="post" action="{url path="/admin/module/AdminComment/save"}" {form_enctype form=$form}>
+
+                {form_hidden_fields form=$form}
+
+                {form_field form=$form field="id"}
+                    <input type="hidden" name="{$name}" value="<%= comment.id %>">
+                {/form_field}
+
+                {form_field form=$form field="comment"}
+                    <div class="form-group">
+                        <textarea name="{$name}" class="form-control"><%= comment.comment %></textarea>
+                    </div>
+                {/form_field}
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">{intl l="Save" d="admincomment.bo.default"}</button>
+                </div>
+            </form>
+        {/form}
+    </div>
+    {/loop}
+    <div class="btn-group">
+        {loop type="auth" name="can_change" role="ADMIN" module="admincomment" access="UPDATE"}
+            <a class="btn btn-default btn-xs js-admincomment-edit" title="{intl d='admincomment.bo.default' l='Save this price slice'}">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+        {/loop}
+        {loop type="auth" name="can_change" role="ADMIN" module="admincomment" access="DELETE"}
+            <a class="btn btn-default btn-xs js-admincomment-delete" data-id="<%= comment.id %>" data-action="{url path="/admin/module/AdminComment/delete"}" title="{intl d='admincomment.bo.default' l='Delete this price slice'}" >
+                <span class="glyphicon glyphicon-trash"></span>
+            </a>
+        {/loop}
+    </div>
+</div>
+</script>

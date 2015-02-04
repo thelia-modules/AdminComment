@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database defaultIdMethod="native" name="thelia"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="../../../../core/vendor/propel/propel/resources/xsd/database.xsd" >
+
+    <table name="admin_comment" namespace="AdminComment\Model">
+        <column autoIncrement="true" name="id" primaryKey="true" required="true" type="INTEGER" />
+        <column name="admin_id" type="INTEGER" required="false" />
+        <column name="comment" type="LONGVARCHAR" />
+        <column name="element_key" required="true" size="255" type="VARCHAR" />
+        <column name="element_id" required="true" type="INTEGER" />
+
+        <foreign-key foreignTable="admin" name="fk_admin_comment_admin_id" onDelete="SET NULL" onUpdate="RESTRICT">
+            <reference foreign="id" local="admin_id" />
+        </foreign-key>
+        <behavior name="timestampable" />
+    </table>
+
+    <external-schema filename="local/config/schema.xml" referenceOnly="true" />
+</database>

@@ -1,0 +1,140 @@
+<script type="text/javascript">
+
+if (typeof jQuery.fn['bootbox'] == 'undefined') {
+{javascripts file='assets/js/bootbox/bootbox.min.js' source='BackOfficePlus'}
+    console.log("bootbox");
+    document.write(unescape("%3Cscript src='{$asset_url}' %3E%3C/script%3E"));
+{/javascripts}
+}
+
+if (typeof window._ == 'undefined') {
+    {javascripts file='assets/js/libs/underscore-min.js'}
+    console.log("underscore");
+    document.write(unescape("%3Cscript src='{$asset_url}' %3E%3C/script%3E"));
+    {/javascripts}
+}
+
+{literal}
+(function ($, undefined) {
+    $(document).ready(function () {
+        if (window.adminCommentConfig === undefined) {
+            return;
+        }
+
+        var $container = $('#admin-comment-wrapper'),
+            $list =  $('#admin-comment-list'),
+            $form =  $('#admin-comment-form'),
+            $inputComment =  $('#admin-comment-form-comment'),
+            $inputKey =  $('#admin-comment-form-key'),
+            $inputId =  $('#admin-comment-form-id'),
+            tplComment = _.template($("#tpl-admin-comment").html())
+        ;
+
+        $container.removeClass("hidden");
+        $inputKey.val(window.adminCommentConfig.key);
+        $inputId.val(window.adminCommentConfig.id);
+
+        var listComment = function listComment() {
+
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                url: window.adminCommentConfig.urlList
+            }).done(function(data, textStatus, jqXHR){
+                var html = '';
+                if (data.success) {
+                    $list.html("");
+                    for (var i = 0 ; i < data.data.length ; i++) {
+                        html += tplComment({comment: data.data[i]});
+                    }
+                    $list.html(html);
+                } else {
+                    bootbox.alert(data.message);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown){
+                bootbox.alert(textStatus);
+            });
+
+        };
+
+        $form.on('submit', function (ev) {
+
+            ev.preventDefault();
+
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                data: $(this).serialize(),
+                url: $(this).attr('action')
+            }).done(function(data, textStatus, jqXHR){
+                if (data.success) {
+                    $list.prepend(tplComment({comment: data}));
+                    $inputComment.val("");
+                } else {
+                    bootbox.alert(data.message);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown){
+                bootbox.alert(textStatus);
+            });
+
+        });
+
+        $list.on('click', '.js-admincomment-delete', function(ev){
+
+            var $deleteButton = $(this);
+
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                data: {id: $deleteButton.data('id')},
+                url: $deleteButton.data("action")
+            }).done(function(data, textStatus, jqXHR){
+                if (data.success) {
+                    $deleteButton.parents('.list-group-item').remove();
+                } else {
+                    bootbox.alert(data.message);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown){
+                bootbox.alert(textStatus);
+            });
+
+        });
+
+        $list.on('click', '.js-admincomment-edit', function(ev){
+            var $listItem = $(this).parents('.list-group-item');
+            $listItem.find('.list-group-item-text').addClass('hidden');
+            $listItem.find('.list-group-item-form').removeClass('hidden');
+        });
+
+        $list.on('submit', '.admin-comment-form', function (ev) {
+
+            ev.preventDefault();
+
+            var $editForm = $(this),
+                $listItem = $editForm.parents(".list-group-item").first();
+
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                data: $editForm.serialize(),
+                url: $editForm.attr('action')
+            }).done(function(data, textStatus, jqXHR){
+                if (data.success) {
+                    $listItem.find('.list-group-item-text').html(data.data.comment).removeClass('hidden');
+                    $listItem.find('.list-group-item-form').addClass('hidden');
+                } else {
+                    bootbox.alert(data.message);
+                }
+            }).fail(function(jqXHR, textStatus, errorThrown){
+                bootbox.alert(textStatus);
+            });
+
+        });
+
+        listComment();
+
+    });
+})(jQuery);
+{/literal}
+
+</script>
