@@ -50,7 +50,7 @@
     <p class="list-group-item-text u-padding-bottom">
         <%= comment.comment %>
     </p>
-    {loop type="auth" name="can_change" role="ADMIN" module="admincomment" access="UPDATE"}
+    <% if (comment.canChange) { %>
     <div class="list-group-item-form hidden">
         {form name="admin_comment_update_form"}
             <form class="admin-comment-form" method="post" action="{url path="/admin/module/AdminComment/save"}" {form_enctype form=$form}>
@@ -73,18 +73,14 @@
             </form>
         {/form}
     </div>
-    {/loop}
     <div class="btn-group">
-        {loop type="auth" name="can_change" role="ADMIN" module="admincomment" access="UPDATE"}
-            <a class="btn btn-default btn-xs js-admincomment-edit" title="{intl d='admincomment.bo.default' l='Save this price slice'}">
-                <span class="glyphicon glyphicon-pencil"></span>
-            </a>
-        {/loop}
-        {loop type="auth" name="can_change" role="ADMIN" module="admincomment" access="DELETE"}
-            <a class="btn btn-default btn-xs js-admincomment-delete" data-id="<%= comment.id %>" data-action="{url path="/admin/module/AdminComment/delete"}" title="{intl d='admincomment.bo.default' l='Delete this price slice'}" >
-                <span class="glyphicon glyphicon-trash"></span>
-            </a>
-        {/loop}
+        <a class="btn btn-default btn-xs js-admincomment-edit" title="{intl d='admincomment.bo.default' l='Edit this comment'}">
+            <span class="glyphicon glyphicon-pencil"></span>
+        </a>
+        <a class="btn btn-default btn-xs js-admincomment-delete" data-id="<%= comment.id %>" data-action="{url path="/admin/module/AdminComment/delete"}" title="{intl d='admincomment.bo.default' l='Delete this comment'}" >
+            <span class="glyphicon glyphicon-trash"></span>
+        </a>
     </div>
+    <% } %>
 </div>
 </script>

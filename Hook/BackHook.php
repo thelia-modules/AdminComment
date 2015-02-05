@@ -71,6 +71,10 @@ class BackHook extends baseHook
             if (false !== strpos($event->getName(), $hookName)) {
                 $key = explode('.', $hookName)[0];
                 $id = intval($event->getArgument($key . '_id'));
+                // try to get from url
+                if (0 === $id) {
+                    $id = intval($this->getRequest()->query->get($key . '_id', 0));
+                }
                 if (0 !== $id) {
                     $out = [
                         'key' => $key,

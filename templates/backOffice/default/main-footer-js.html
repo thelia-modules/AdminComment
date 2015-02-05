@@ -68,7 +68,7 @@ if (typeof window._ == 'undefined') {
                 url: $(this).attr('action')
             }).done(function(data, textStatus, jqXHR){
                 if (data.success) {
-                    $list.prepend(tplComment({comment: data}));
+                    $list.prepend(tplComment({comment: data.data}));
                     $inputComment.val("");
                 } else {
                     bootbox.alert(data.message);

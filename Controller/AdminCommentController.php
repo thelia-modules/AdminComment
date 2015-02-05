@@ -35,7 +35,7 @@ class AdminCommentController extends BaseAdminController
 
     public function listAction($key, $id)
     {
-        $response = $this->checkAuth([AdminResources::MODULE], [AdminComment::getModuleCode()], AccessManager::VIEW);
+        $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::VIEW);
         if (null !== $response) {
             return $response;
         }
@@ -65,7 +65,7 @@ class AdminCommentController extends BaseAdminController
 
     public function createAction()
     {
-        $response = $this->checkAuth([AdminResources::MODULE], [AdminComment::getModuleCode()], AccessManager::CREATE);
+        $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::CREATE);
         if (null !== $response) {
             return $response;
         }
@@ -80,7 +80,7 @@ class AdminCommentController extends BaseAdminController
 
     public function saveAction()
     {
-        $response = $this->checkAuth([AdminResources::MODULE], [AdminComment::getModuleCode()], AccessManager::UPDATE);
+        $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::UPDATE);
         if (null !== $response) {
             return $response;
         }
@@ -126,7 +126,7 @@ class AdminCommentController extends BaseAdminController
 
     public function deleteAction()
     {
-        $response = $this->checkAuth([AdminResources::MODULE], [AdminComment::getModuleCode()], AccessManager::DELETE);
+        $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::DELETE);
         if (null !== $response) {
             return $response;
         }
@@ -164,6 +164,21 @@ class AdminCommentController extends BaseAdminController
         return $this->jsonResponse(json_encode($responseData));
     }
 
+    protected function canChange(\AdminComment\Model\AdminComment $comment)
+    {
+        $user = $this->getSecurityContext()->getAdminUser();
+
+        if ($comment->getAdminId() === $user->getId()) {
+            return true;
+        }
+
+        if ($user->getPermissions() === AdminResources::SUPERADMINISTRATOR) {
+            return true;
+        }
+
+        return false;
+    }
+
     private function mapCommentObject(\AdminComment\Model\AdminComment $comment)
     {
         $format = DateTimeFormat::getInstance($this->getRequest())
@@ -175,7 +190,8 @@ class AdminCommentController extends BaseAdminController
             'admin' => (null !== $comment->getAdmin())
                 ? $comment->getAdmin()->getFirstname() . ' ' . $comment->getAdmin()->getLastname()
                 : '',
-            'comment' => $comment->getComment()
+            'comment' => $comment->getComment(),
+            'canChange' => $this->canChange($comment)
         ];
 
         return $data;
