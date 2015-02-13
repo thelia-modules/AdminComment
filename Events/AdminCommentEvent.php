@@ -19,7 +19,7 @@ use Thelia\Core\Event\ActionEvent;
 /**
  * Class AdminCommentEvent
  * @package AdminComment\Events
- * @author Julien Chanséaume <jchanseaume@openstudio.fr>
+ * @author Julien Chanséaume <julien@thelia.net[>
  */
 class AdminCommentEvent extends ActionEvent
 {

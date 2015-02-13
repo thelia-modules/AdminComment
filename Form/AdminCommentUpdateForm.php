@@ -21,7 +21,7 @@ use Thelia\Form\BaseForm;
 /**
  * Class AdminCommentCreateForm
  * @package AdminComment\Form
- * @author Julien Chanséaume <jchanseaume@openstudio.fr>
+ * @author Julien Chanséaume <julien@thelia.net[>
  */
 class AdminCommentUpdateForm extends BaseForm
 {

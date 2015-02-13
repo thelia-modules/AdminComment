@@ -19,7 +19,7 @@ use Thelia\Core\Hook\BaseHook;
 /**
  * Class BackHook
  * @package AdminComment\Hook
- * @author Julien Chanséaume <jchanseaume@openstudio.fr>
+ * @author Julien Chanséaume <julien@thelia.net[>
  */
 class BackHook extends baseHook
 {
@@ -50,7 +50,6 @@ class BackHook extends baseHook
                 )
             );
         }
-
     }
 
     protected function getParameters(HookRenderEvent $event)

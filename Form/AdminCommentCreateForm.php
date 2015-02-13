@@ -21,20 +21,19 @@ use Thelia\Form\BaseForm;
 /**
  * Class AdminCommentCreateForm
  * @package AdminComment\Form
- * @author Julien Chanséaume <jchanseaume@openstudio.fr>
+ * @author Julien Chanséaume <julien@thelia.net[>
  */
 class AdminCommentCreateForm extends BaseForm
 {
     /** @var Translator $translator */
     protected $translator;
 
-    protected function trans($id, $parameters = [])
+    /**
+     * @return string the name of you form. This name must be unique
+     */
+    public function getName()
     {
-        if (null === $this->translator) {
-            $this->translator = Translator::getInstance();
-        }
-
-        return $this->translator->trans($id, $parameters, AdminComment::MESSAGE_DOMAIN);
+        return 'admin_comment_create';
     }
 
     /**
@@ -103,11 +102,12 @@ class AdminCommentCreateForm extends BaseForm
             );
     }
 
-    /**
-     * @return string the name of you form. This name must be unique
-     */
-    public function getName()
+    protected function trans($id, $parameters = [])
     {
-        return 'admin_comment_create';
+        if (null === $this->translator) {
+            $this->translator = Translator::getInstance();
+        }
+
+        return $this->translator->trans($id, $parameters, AdminComment::MESSAGE_DOMAIN);
     }
 }

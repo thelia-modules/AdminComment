@@ -16,7 +16,7 @@ namespace AdminComment\Events;
 /**
  * Class AdminCommentEvents
  * @package AdminComment\Events
- * @author Julien Chanséaume <jchanseaume@openstudio.fr>
+ * @author Julien Chanséaume <julien@thelia.net[>
  */
 class AdminCommentEvents
 {

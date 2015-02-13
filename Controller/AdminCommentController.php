@@ -22,13 +22,12 @@ use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
 use Thelia\Form\Exception\FormValidationException;
-use Thelia\Model\Map\AdminTableMap;
 use Thelia\Tools\DateTimeFormat;
 
 /**
  * Class AdminCommentController
  * @package AdminComment\Controller
- * @author Julien Chanséaume <jchanseaume@openstudio.fr>
+ * @author Julien Chanséaume <julien@thelia.net[>
  */
 class AdminCommentController extends BaseAdminController
 {
@@ -60,7 +59,39 @@ class AdminCommentController extends BaseAdminController
                 ]
             )
         );
+    }
 
+    private function mapCommentObject(\AdminComment\Model\AdminComment $comment)
+    {
+        $format = DateTimeFormat::getInstance($this->getRequest())
+            ->getFormat();
+
+        $data = [
+            'id' => $comment->getId(),
+            'date' => $comment->getCreatedAt($format),
+            'admin' => (null !== $comment->getAdmin())
+                ? $comment->getAdmin()->getFirstname() . ' ' . $comment->getAdmin()->getLastname()
+                : '',
+            'comment' => $comment->getComment(),
+            'canChange' => $this->canChange($comment)
+        ];
+
+        return $data;
+    }
+
+    protected function canChange(\AdminComment\Model\AdminComment $comment)
+    {
+        $user = $this->getSecurityContext()->getAdminUser();
+
+        if ($comment->getAdminId() === $user->getId()) {
+            return true;
+        }
+
+        if ($user->getPermissions() === AdminResources::SUPERADMINISTRATOR) {
+            return true;
+        }
+
+        return false;
     }
 
     public function createAction()
@@ -73,21 +104,6 @@ class AdminCommentController extends BaseAdminController
         $responseData = $this->createOrUpdate(
             'admin_comment_create_form',
             AdminCommentEvents::CREATE
-        );
-
-        return $this->jsonResponse(json_encode($responseData));
-    }
-
-    public function saveAction()
-    {
-        $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::UPDATE);
-        if (null !== $response) {
-            return $response;
-        }
-
-        $responseData = $this->createOrUpdate(
-            'admin_comment_update_form',
-            AdminCommentEvents::UPDATE
         );
 
         return $this->jsonResponse(json_encode($responseData));
@@ -122,6 +138,21 @@ class AdminCommentController extends BaseAdminController
         }
 
         return $responseData;
+    }
+
+    public function saveAction()
+    {
+        $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::UPDATE);
+        if (null !== $response) {
+            return $response;
+        }
+
+        $responseData = $this->createOrUpdate(
+            'admin_comment_update_form',
+            AdminCommentEvents::UPDATE
+        );
+
+        return $this->jsonResponse(json_encode($responseData));
     }
 
     public function deleteAction()
@@ -162,38 +193,5 @@ class AdminCommentController extends BaseAdminController
         }
 
         return $this->jsonResponse(json_encode($responseData));
-    }
-
-    protected function canChange(\AdminComment\Model\AdminComment $comment)
-    {
-        $user = $this->getSecurityContext()->getAdminUser();
-
-        if ($comment->getAdminId() === $user->getId()) {
-            return true;
-        }
-
-        if ($user->getPermissions() === AdminResources::SUPERADMINISTRATOR) {
-            return true;
-        }
-
-        return false;
-    }
-
-    private function mapCommentObject(\AdminComment\Model\AdminComment $comment)
-    {
-        $format = DateTimeFormat::getInstance($this->getRequest())
-            ->getFormat();
-
-        $data = [
-            'id' => $comment->getId(),
-            'date' => $comment->getCreatedAt($format),
-            'admin' => (null !== $comment->getAdmin())
-                ? $comment->getAdmin()->getFirstname() . ' ' . $comment->getAdmin()->getLastname()
-                : '',
-            'comment' => $comment->getComment(),
-            'canChange' => $this->canChange($comment)
-        ];
-
-        return $data;
     }
 }
