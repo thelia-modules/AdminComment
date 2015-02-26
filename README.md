@@ -1,19 +1,24 @@
 # Admin Comment
 
-this module allows you to add comments on each part of the back office : categories, products, folders, contents,
+This module allows you to add comments on each part of the back office : categories, products, folders, contents,
  orders, customers and coupons.
 These comments are not visible for customers. 
    
 ## Installation
  
-This module must be placed into your modules/ directory (local/modules/).
+### Manually
 
-You can download the .zip file of this module or create a git submodule into your project like this :
+* Copy the module into ```<thelia_root>/local/modules/``` directory and be sure that the name of the 
+    module is AdminComment.
+* Activate it in your thelia administration panel
 
-cd /path-to-thelia
-git submodule add https://github.com/thelia-modules/AdminComment.git local/modules/AdminComment
+### Composer
 
-Next, go to your Thelia admin panel for module activation.
+Add it in your main thelia composer.json file
+
+```
+composer require thelia/admin-comment-module:~1.0
+```
 
 ## configuration
 
