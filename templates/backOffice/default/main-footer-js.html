@@ -1,12 +1,5 @@
 <script type="text/javascript">
 
-if (typeof jQuery.fn['bootbox'] == 'undefined') {
-{javascripts file='assets/js/bootbox/bootbox.min.js' source='BackOfficePlus'}
-    console.log("bootbox");
-    document.write(unescape("%3Cscript src='{$asset_url}' %3E%3C/script%3E"));
-{/javascripts}
-}
-
 if (typeof window._ == 'undefined') {
     {javascripts file='assets/js/libs/underscore-min.js'}
     console.log("underscore");
@@ -34,6 +27,14 @@ if (typeof window._ == 'undefined') {
         $inputKey.val(window.adminCommentConfig.key);
         $inputId.val(window.adminCommentConfig.id);
 
+        var showMessage = function showMessage(message) {
+            $('#admin_comment_dialog')
+                .find('.modal-body')
+                    .html(message)
+                .end()
+                .modal("show");
+        };
+
         var listComment = function listComment() {
 
             $.ajax({
@@ -49,10 +50,10 @@ if (typeof window._ == 'undefined') {
                     }
                     $list.html(html);
                 } else {
-                    bootbox.alert(data.message);
+                    showMessage(data.message);
                 }
             }).fail(function(jqXHR, textStatus, errorThrown){
-                bootbox.alert(textStatus);
+                showMessage(textStatus);
             });
 
         };
@@ -71,10 +72,10 @@ if (typeof window._ == 'undefined') {
                     $list.prepend(tplComment({comment: data.data}));
                     $inputComment.val("");
                 } else {
-                    bootbox.alert(data.message);
+                    showMessage(data.message);
                 }
             }).fail(function(jqXHR, textStatus, errorThrown){
-                bootbox.alert(textStatus);
+                showMessage(textStatus);
             });
 
         });
@@ -92,10 +93,10 @@ if (typeof window._ == 'undefined') {
                 if (data.success) {
                     $deleteButton.parents('.list-group-item').remove();
                 } else {
-                    bootbox.alert(data.message);
+                    showMessage(data.message);
                 }
             }).fail(function(jqXHR, textStatus, errorThrown){
-                bootbox.alert(textStatus);
+                showMessage(textStatus);
             });
 
         });
@@ -123,10 +124,10 @@ if (typeof window._ == 'undefined') {
                     $listItem.find('.list-group-item-text').html(data.data.comment).removeClass('hidden');
                     $listItem.find('.list-group-item-form').addClass('hidden');
                 } else {
-                    bootbox.alert(data.message);
+                    showMessage(data.message);
                 }
             }).fail(function(jqXHR, textStatus, errorThrown){
-                bootbox.alert(textStatus);
+                showMessage(textStatus);
             });
 
         });
