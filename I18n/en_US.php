@@ -1,4 +1,10 @@
 <?php
+
 return array(
-    // 'an english string' => 'The displayed english string',
+    'Admin Id' => 'Admin Id',
+    'Comment' => 'Comment',
+    'Comment Id' => 'Comment Id',
+    'Element id' => 'Element id',
+    'Element key' => 'Element key',
+    'Unknown comment' => 'Unknown comment',
 );

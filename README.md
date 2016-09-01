@@ -24,3 +24,10 @@ composer require thelia/admin-comment-module:~1.0
 
 no special configurations needed. just set the permissions for administrators.
 
+
+## Changelog
+
+### 1.0.1
+
+- Fixed module activation
+- Removed JS dependency to missing bootbox lib

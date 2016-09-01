@@ -21,7 +21,7 @@ class AdminComment extends BaseModule
 {
     const MESSAGE_DOMAIN = 'admincomment';
 
-    public function postDeactivation(ConnectionInterface $con = null)
+    public function postActivation(ConnectionInterface $con = null)
     {
         // Schema
         try {
