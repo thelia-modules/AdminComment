@@ -17,7 +17,7 @@ These comments are not visible for customers.
 Add it in your main thelia composer.json file
 
 ```
-composer require thelia/admin-comment-module:~1.0
+composer require thelia/admin-comment-module ~1.1.0
 ```
 
 ## configuration
@@ -26,6 +26,11 @@ no special configurations needed. just set the permissions for administrators.
 
 
 ## Changelog
+
+### 1.1.0
+
+- Add tab in edit page with comment counter in tab title
+- Add comment counter in order list
 
 ### 1.0.1
 

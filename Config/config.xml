@@ -31,6 +31,7 @@
         <hook id="admincomment.hook" class="AdminComment\Hook\BackHook" scope="request">
             <tag name="hook.event_listener" event="main.after-content" type="back" />
             <tag name="hook.event_listener" event="main.footer-js" type="back" />
+
             <tag name="hook.event_listener" event="category.edit-js" type="back" method="onEditJs" />
             <tag name="hook.event_listener" event="product.edit-js" type="back" method="onEditJs" />
             <tag name="hook.event_listener" event="folder.edit-js" type="back" method="onEditJs" />
@@ -38,6 +39,15 @@
             <tag name="hook.event_listener" event="customer.edit-js" type="back" method="onEditJs" />
             <tag name="hook.event_listener" event="order.edit-js" type="back" method="onEditJs" />
             <tag name="hook.event_listener" event="coupon.update-js" type="back" method="onEditJs" />
+
+            <tag name="hook.event_listener" event="category.tab" type="back" method="onEditTab" />
+            <tag name="hook.event_listener" event="product.tab" type="back" method="onEditTab" />
+            <tag name="hook.event_listener" event="folder.tab" type="back" method="onEditTab" />
+            <tag name="hook.event_listener" event="content.tab" type="back" method="onEditTab" />
+            <tag name="hook.event_listener" event="order.tab" type="back" method="onEditTab" />
+
+            <tag name="hook.event_listener" event="orders.table-header" type="back" method="onListHeader" />
+            <tag name="hook.event_listener" event="orders.table-row" type="back" method="onListRow" />
         </hook>
     </hooks>
 

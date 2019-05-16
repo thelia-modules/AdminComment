@@ -3,6 +3,7 @@
 return array(
     'Admin Id' => 'Id Admin',
     'Comment' => 'Commentaire',
+    'Comment (%count)' => 'Commentaires (%count)',
     'Comment Id' => 'Id commentaire',
     'Element id' => 'Id de l\'élément',
     'Element key' => 'Clé de l\'élément',

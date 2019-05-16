@@ -13,8 +13,12 @@
 
 namespace AdminComment\Hook;
 
+use AdminComment\AdminComment;
+use AdminComment\Model\AdminCommentQuery;
+use Thelia\Core\Event\Hook\HookRenderBlockEvent;
 use Thelia\Core\Event\Hook\HookRenderEvent;
 use Thelia\Core\Hook\BaseHook;
+use Thelia\Core\Translation\Translator;
 
 /**
  * Class BackHook
@@ -52,6 +56,58 @@ class BackHook extends baseHook
         }
     }
 
+    public function onEditTab(HookRenderBlockEvent $event)
+    {
+        $params = $this->getTabParameters($event);
+
+        $count = AdminCommentQuery::create()
+            ->filterByElementKey($params['key'])
+            ->filterByElementId($event->getArgument('id'))
+            ->count();
+
+
+        $event->add(
+          [
+              "id" => 'admin-comment',
+              "title" => Translator::getInstance()->trans("Comment (%count)", ['%count' => $count], AdminComment::MESSAGE_DOMAIN),
+              "content" =>  ""
+
+          ]
+        );
+    }
+
+    public function onListHeader(HookRenderEvent $event)
+    {
+        $event->add("<td class='text-center'>".Translator::getInstance()->trans('Comment', [], AdminComment::MESSAGE_DOMAIN)."</td>");
+    }
+
+    public function onListRow(HookRenderEvent $event)
+    {
+        $key = null;
+
+        if (false !== strpos($event->getName(), 'orders.table-row')) {
+            $key = 'order';
+        }
+
+        $count = 0;
+
+        if ($key) {
+            $count = AdminCommentQuery::create()
+                ->filterByElementKey($key)
+                ->filterByElementId($event->getArgument($key.'_id'))
+                ->count();
+
+        }
+
+        $counter = "";
+
+        if ($count > 0) {
+            $counter = "<span class='badge' style='background-color: #f39922'>$count</span>";
+        }
+
+        $event->add("<td class='text-center'>$counter</td>");
+    }
+
     protected function getParameters(HookRenderEvent $event)
     {
         $out = [];
@@ -81,6 +137,28 @@ class BackHook extends baseHook
                     ];
                 }
                 break;
+            }
+        }
+
+        return $out;
+    }
+
+    protected function getTabParameters(HookRenderBlockEvent $event)
+    {
+        $out = [];
+
+        $authorizedHook = [
+            'category.tab',
+            'product.tab',
+            'folder.tab',
+            'content.tab',
+            'order.tab'
+        ];
+
+        foreach ($authorizedHook as $hookName) {
+            if (false !== strpos($event->getName(), $hookName)) {
+                $key = explode('.', $hookName)[0];
+                $out['key'] = $key;
             }
         }
 
