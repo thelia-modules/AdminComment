@@ -24,8 +24,37 @@ composer require thelia/admin-comment-module ~1.1.0
 
 no special configurations needed. just set the permissions for administrators.
 
+## Loop
+
+Get the comment by loop
+
+### Input arguments
+
+|Argument   |Description |
+|---          |--- |
+|**id**  | The id of comment |
+|**element_key** | The key of commented element |
+|**element_id**   | The id of commented element |
+
+### Ouput arguments
+
+|Variable   |Description |
+|---          |--- |
+|$ID    |the comment ID |
+|$ADMIN_ID    |Author id  |
+|$ADMIN_NAME    |Author name  |
+|$COMMENT    |The message  |
+|$ELEMENT_KEY   |The key of commented element |
+|$ELEMENT_ID   |The id of commented element |
+|$CREATED_AT   |Comment creation date|
+|$UPDATED_AT   |Comment update date |
+
 
 ## Changelog
+
+### 1.1.1
+
+- Add loop for admin comment
 
 ### 1.1.0
 
