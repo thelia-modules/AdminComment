@@ -16,15 +16,24 @@ namespace AdminComment\Controller;
 use AdminComment\AdminComment;
 use AdminComment\Events\AdminCommentEvent;
 use AdminComment\Events\AdminCommentEvents;
+use AdminComment\Form\AdminCommentCreateForm;
+use AdminComment\Form\AdminCommentUpdateForm;
 use AdminComment\Model\AdminCommentQuery;
 use Propel\Runtime\ActiveQuery\Criteria;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Thelia\Controller\Admin\BaseAdminController;
 use Thelia\Core\Security\AccessManager;
 use Thelia\Core\Security\Resource\AdminResources;
+use Thelia\Core\Security\SecurityContext;
+use Thelia\Core\Translation\Translator;
 use Thelia\Form\Exception\FormValidationException;
 use Thelia\Tools\DateTimeFormat;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * @Route("/admin/module/AdminComment", name="admin_comment_module")
  * Class AdminCommentController
  * @package AdminComment\Controller
  * @author Julien Chanséaume <julien@thelia.net[>
@@ -32,7 +41,10 @@ use Thelia\Tools\DateTimeFormat;
 class AdminCommentController extends BaseAdminController
 {
 
-    public function listAction($key, $id)
+    /**
+     * @Route("/list/{key}/{id}", name="_list", methods="GET")
+     */
+    public function listAction($key, $id, RequestStack $requestStack, SecurityContext $securityContext)
     {
         $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::VIEW);
         if (null !== $response) {
@@ -47,7 +59,7 @@ class AdminCommentController extends BaseAdminController
 
         $data = [];
         foreach ($comments as $comment) {
-            $data[] = $this->mapCommentObject($comment);
+            $data[] = $this->mapCommentObject($comment, $requestStack->getCurrentRequest(), $securityContext);
         }
 
         return $this->jsonResponse(
@@ -61,9 +73,9 @@ class AdminCommentController extends BaseAdminController
         );
     }
 
-    private function mapCommentObject(\AdminComment\Model\AdminComment $comment)
+    private function mapCommentObject(\AdminComment\Model\AdminComment $comment, Request $request, $securityContext)
     {
-        $format = DateTimeFormat::getInstance($this->getRequest())
+        $format = DateTimeFormat::getInstance($request)
             ->getFormat();
 
         $data = [
@@ -73,15 +85,15 @@ class AdminCommentController extends BaseAdminController
                 ? $comment->getAdmin()->getFirstname() . ' ' . $comment->getAdmin()->getLastname()
                 : '',
             'comment' => $comment->getComment(),
-            'canChange' => $this->canChange($comment)
+            'canChange' => $this->canChange($comment, $securityContext)
         ];
 
         return $data;
     }
 
-    protected function canChange(\AdminComment\Model\AdminComment $comment)
+    protected function canChange(\AdminComment\Model\AdminComment $comment, $securityContext)
     {
-        $user = $this->getSecurityContext()->getAdminUser();
+        $user = $securityContext->getAdminUser();
 
         if ($comment->getAdminId() === $user->getId()) {
             return true;
@@ -94,7 +106,10 @@ class AdminCommentController extends BaseAdminController
         return false;
     }
 
-    public function createAction()
+    /**
+     * @Route("/create", name="_create", methods="POST")
+     */
+    public function createAction(EventDispatcherInterface $eventDispatcher, RequestStack $requestStack, SecurityContext $securityContext)
     {
         $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::CREATE);
         if (null !== $response) {
@@ -102,14 +117,17 @@ class AdminCommentController extends BaseAdminController
         }
 
         $responseData = $this->createOrUpdate(
-            'admin_comment_create_form',
-            AdminCommentEvents::CREATE
+            AdminCommentCreateForm::getName(),
+            AdminCommentEvents::CREATE,
+            $eventDispatcher,
+            $requestStack->getCurrentRequest(),
+            $securityContext
         );
 
         return $this->jsonResponse(json_encode($responseData));
     }
 
-    protected function createOrUpdate($formId, $eventName)
+    protected function createOrUpdate($formId, $eventName, EventDispatcherInterface $eventDispatcher, $request, $securityContext)
     {
         $this->checkXmlHttpRequest();
 
@@ -126,11 +144,11 @@ class AdminCommentController extends BaseAdminController
             $event = new AdminCommentEvent();
             $event->bindForm($formData);
 
-            $this->dispatch($eventName, $event);
+            $eventDispatcher->dispatch($event, $eventName);
 
             $responseData['success'] = true;
             $responseData['message'] = 'ok';
-            $responseData['data'] = $this->mapCommentObject($event->getAdminComment());
+            $responseData['data'] = $this->mapCommentObject($event->getAdminComment(), $request, $securityContext);
         } catch (FormValidationException $e) {
             $responseData['message'] = $e->getMessage();
         } catch (\Exception $e) {
@@ -140,7 +158,10 @@ class AdminCommentController extends BaseAdminController
         return $responseData;
     }
 
-    public function saveAction()
+    /**
+     * @Route("/save", name="_save", methods="POST")
+     */
+    public function saveAction(EventDispatcherInterface $eventDispatcher, RequestStack $requestStack, SecurityContext $securityContext)
     {
         $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::UPDATE);
         if (null !== $response) {
@@ -148,14 +169,20 @@ class AdminCommentController extends BaseAdminController
         }
 
         $responseData = $this->createOrUpdate(
-            'admin_comment_update_form',
-            AdminCommentEvents::UPDATE
+            AdminCommentUpdateForm::getName(),
+            AdminCommentEvents::UPDATE,
+            $eventDispatcher,
+            $requestStack->getCurrentRequest(),
+            $securityContext
         );
 
         return $this->jsonResponse(json_encode($responseData));
     }
 
-    public function deleteAction()
+    /**
+     * @Route("/delete", name="_delete", methods="POST")
+     */
+    public function deleteAction(RequestStack $requestStack, Translator $translator, EventDispatcherInterface $eventDispatcher)
     {
         $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::DELETE);
         if (null !== $response) {
@@ -170,21 +197,21 @@ class AdminCommentController extends BaseAdminController
         ];
 
         try {
-            $id = intval($this->getRequest()->request->get('id'));
+            $id = (int)$requestStack->getCurrentRequest()->request->get('id');
 
             if (0 === $id) {
                 throw new \RuntimeException(
-                    $this->getTranslator()->trans('Unknown comment', [], AdminComment::MESSAGE_DOMAIN)
+                    $translator->trans('Unknown comment', [], AdminComment::MESSAGE_DOMAIN)
                 );
             }
 
             $event = new AdminCommentEvent();
             $event->setId($id);
-            $this->dispatch(AdminCommentEvents::DELETE, $event);
+            $eventDispatcher->dispatch($event, AdminCommentEvents::DELETE);
 
             if (null === $event->getAdminComment()) {
                 throw new \RuntimeException(
-                    $this->getTranslator()->trans('Unknown comment', [], AdminComment::MESSAGE_DOMAIN)
+                    $translator->trans('Unknown comment', [], AdminComment::MESSAGE_DOMAIN)
                 );
             }
             $responseData['success'] = true;

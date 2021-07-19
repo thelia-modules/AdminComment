@@ -19,11 +19,11 @@
         -->
     </commands>
 
-    <services>
+    <!--<services>
         <service id="action.admin_comment" class="AdminComment\Action\AdminCommentAction" scope="request">
             <tag name="kernel.event_subscriber"/>
         </service>
-    </services>
+    </services>-->
 
     <hooks>
         <hook id="admincomment.hook" class="AdminComment\Hook\BackHook" scope="request">
