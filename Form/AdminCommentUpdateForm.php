@@ -14,6 +14,8 @@
 namespace AdminComment\Form;
 
 use AdminComment\AdminComment;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
@@ -63,7 +65,7 @@ class AdminCommentUpdateForm extends BaseForm
             ->formBuilder
             ->add(
                 "id",
-                "integer",
+                IntegerType::class,
                 [
                     "label" => $this->trans("Comment Id"),
                     "constraints" => [
@@ -73,7 +75,7 @@ class AdminCommentUpdateForm extends BaseForm
             )
             ->add(
                 "comment",
-                "textarea",
+                TextareaType::class,
                 [
                     "label" => $this->trans("Comment"),
                     "constraints" => [
@@ -86,7 +88,7 @@ class AdminCommentUpdateForm extends BaseForm
     /**
      * @return string the name of you form. This name must be unique
      */
-    public function getName()
+    public static function getName()
     {
         return 'admin_comment_update';
     }

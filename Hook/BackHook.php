@@ -85,7 +85,7 @@ class BackHook extends baseHook
     {
         $key = null;
 
-        if (false !== strpos($event->getName(), 'orders.table-row')) {
+        if (false !== strpos($event->getCode(), 'orders.table-row')) {
             $key = 'order';
         }
 
@@ -123,12 +123,12 @@ class BackHook extends baseHook
         ];
 
         foreach ($authorizedHook as $hookName) {
-            if (false !== strpos($event->getName(), $hookName)) {
+            if (false !== strpos($event->getCode(), $hookName)) {
                 $key = explode('.', $hookName)[0];
-                $id = intval($event->getArgument($key . '_id'));
+                $id = (int)$event->getArgument($key . '_id');
                 // try to get from url
                 if (0 === $id) {
-                    $id = intval($this->getRequest()->query->get($key . '_id', 0));
+                    $id = (int)$this->getRequest()->query->get($key . '_id', 0);
                 }
                 if (0 !== $id) {
                     $out = [
@@ -156,7 +156,7 @@ class BackHook extends baseHook
         ];
 
         foreach ($authorizedHook as $hookName) {
-            if (false !== strpos($event->getName(), $hookName)) {
+            if (false !== strpos($event->getCode(), $hookName)) {
                 $key = explode('.', $hookName)[0];
                 $out['key'] = $key;
             }

@@ -14,6 +14,10 @@
 namespace AdminComment\Form;
 
 use AdminComment\AdminComment;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\BaseForm;
@@ -31,7 +35,7 @@ class AdminCommentCreateForm extends BaseForm
     /**
      * @return string the name of you form. This name must be unique
      */
-    public function getName()
+    public static function getName()
     {
         return 'admin_comment_create';
     }
@@ -62,7 +66,7 @@ class AdminCommentCreateForm extends BaseForm
             ->formBuilder
             ->add(
                 "admin_id",
-                "integer",
+                IntegerType::class,
                 [
                     "label" => $this->trans("Admin Id"),
                     "constraints" => [
@@ -72,7 +76,7 @@ class AdminCommentCreateForm extends BaseForm
             )
             ->add(
                 "element_key",
-                "text",
+                TextType::class,
                 [
                     "label" => $this->trans("Element key"),
                     "constraints" => [
@@ -82,7 +86,7 @@ class AdminCommentCreateForm extends BaseForm
             )
             ->add(
                 "element_id",
-                "number",
+                NumberType::class,
                 [
                     "label" => $this->trans("Element id"),
                     "constraints" => [
@@ -92,7 +96,7 @@ class AdminCommentCreateForm extends BaseForm
             )
             ->add(
                 "comment",
-                "textarea",
+                TextareaType::class,
                 [
                     "label" => $this->trans("Comment"),
                     "constraints" => [
