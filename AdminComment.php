@@ -36,7 +36,7 @@ class AdminComment extends BaseModule
     public static function configureServices(ServicesConfigurator $servicesConfigurator): void
     {
         $servicesConfigurator->load(self::getModuleCode().'\\', __DIR__)
-            ->exclude([THELIA_MODULE_DIR . ucfirst(self::getModuleCode()). "/I18n/*"])
+            ->exclude(["/I18n/*"])
             ->autowire(true)
             ->autoconfigure(true);
     }
