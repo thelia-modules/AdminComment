@@ -30,10 +30,9 @@ use Thelia\Core\Security\SecurityContext;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\Exception\FormValidationException;
 use Thelia\Tools\DateTimeFormat;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * @Route("/admin/module/AdminComment", name="admin_comment_module")
  * Class AdminCommentController
  * @package AdminComment\Controller
  * @author Julien Chanséaume <julien@thelia.net[>
@@ -44,6 +43,7 @@ class AdminCommentController extends BaseAdminController
     /**
      * @Route("/list/{key}/{id}", name="_list", methods="GET")
      */
+    #[Route('/admin/module/AdminComment', name: 'admin_comment_module')]
     public function listAction($key, $id, RequestStack $requestStack, SecurityContext $securityContext)
     {
         $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::VIEW);
@@ -107,8 +107,8 @@ class AdminCommentController extends BaseAdminController
     }
 
     /**
-     * @Route("/create", name="_create", methods="POST")
      */
+    #[Route('/create', name: '_create', methods: ['POST'])]
     public function createAction(EventDispatcherInterface $eventDispatcher, RequestStack $requestStack, SecurityContext $securityContext)
     {
         $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::CREATE);
@@ -159,8 +159,8 @@ class AdminCommentController extends BaseAdminController
     }
 
     /**
-     * @Route("/save", name="_save", methods="POST")
      */
+    #[Route('/save', name: '_save', methods: ['POST'])]
     public function saveAction(EventDispatcherInterface $eventDispatcher, RequestStack $requestStack, SecurityContext $securityContext)
     {
         $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::UPDATE);
@@ -180,8 +180,8 @@ class AdminCommentController extends BaseAdminController
     }
 
     /**
-     * @Route("/delete", name="_delete", methods="POST")
      */
+    #[Route('/delete', name: '_delete', methods: ['POST'])]
     public function deleteAction(RequestStack $requestStack, Translator $translator, EventDispatcherInterface $eventDispatcher)
     {
         $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::DELETE);

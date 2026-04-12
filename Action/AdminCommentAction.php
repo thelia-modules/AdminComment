@@ -46,7 +46,7 @@ class AdminCommentAction implements EventSubscriberInterface
      *
      * @api
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             AdminCommentEvents::CREATE => ["create", 128],
