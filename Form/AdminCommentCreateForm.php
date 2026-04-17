@@ -30,7 +30,6 @@ use Thelia\Form\BaseForm;
 class AdminCommentCreateForm extends BaseForm
 {
     /** @var Translator $translator */
-    protected $translator;
 
     /**
      * @return string the name of you form. This name must be unique

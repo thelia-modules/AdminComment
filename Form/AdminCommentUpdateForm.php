@@ -28,7 +28,6 @@ use Thelia\Form\BaseForm;
 class AdminCommentUpdateForm extends BaseForm
 {
     /** @var Translator $translator */
-    protected $translator;
 
     protected function trans($id, $parameters = [])
     {
