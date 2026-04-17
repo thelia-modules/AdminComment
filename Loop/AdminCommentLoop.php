@@ -42,7 +42,7 @@ class AdminCommentLoop extends BaseLoop implements PropelSearchLoopInterface
         );
     }
 
-    public function buildModelCriteria()
+    public function buildModelCriteria(): \Propel\Runtime\ActiveQuery\ModelCriteria
     {
         $search = AdminCommentQuery::create();
 
