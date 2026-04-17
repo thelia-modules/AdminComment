@@ -17,7 +17,7 @@ use Thelia\Type;
 
 class AdminCommentLoop extends BaseLoop implements PropelSearchLoopInterface
 {
-    protected function getArgDefinitions()
+    protected function getArgDefinitions(): \Thelia\Core\Template\Loop\Argument\ArgumentCollection
     {
         return new ArgumentCollection(
             Argument::createIntListTypeArgument('id'),
@@ -90,7 +90,7 @@ class AdminCommentLoop extends BaseLoop implements PropelSearchLoopInterface
         return $search;
     }
 
-    public function parseResults(LoopResult $loopResult)
+    public function parseResults(LoopResult $loopResult): LoopResult
     {
         /** @var AdminComment $comment */
         foreach ($loopResult->getResultDataCollection() as $comment) {
