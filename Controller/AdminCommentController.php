@@ -37,13 +37,10 @@ use Symfony\Component\Routing\Attribute\Route;
  * @package AdminComment\Controller
  * @author Julien Chanséaume <julien@thelia.net[>
  */
+#[Route('/admin/module/AdminComment', name: 'admin_comment_module')]
 class AdminCommentController extends BaseAdminController
 {
-
-    /**
-     * @Route("/list/{key}/{id}", name="_list", methods="GET")
-     */
-    #[Route('/admin/module/AdminComment', name: 'admin_comment_module')]
+    #[Route('/list/{key}/{id}', name: '_list', methods: ['GET'])]
     public function listAction($key, $id, RequestStack $requestStack, SecurityContext $securityContext)
     {
         $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::VIEW);
