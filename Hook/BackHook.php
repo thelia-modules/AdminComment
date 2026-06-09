@@ -37,6 +37,9 @@ class BackHook extends BaseHook
     public static function getSubscribedHooks(): array
     {
         return [
+            'module.configuration' => [
+                ['type' => 'back', 'method' => 'onModuleConfiguration'],
+            ],
             'main.after-content' => [
                 ['type' => 'back', 'method' => 'onMainAfterContent'],
             ],
@@ -86,6 +89,13 @@ class BackHook extends BaseHook
                 ['type' => 'back', 'method' => 'onListRow'],
             ],
         ];
+    }
+
+    public function onModuleConfiguration(HookRenderEvent $event): void
+    {
+        $event->add(
+            $this->render('AdminComment/module-configuration.html.twig')
+        );
     }
 
     public function onMainAfterContent(HookRenderEvent $event): void
