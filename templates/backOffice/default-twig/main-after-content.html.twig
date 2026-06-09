@@ -1,0 +1,112 @@
+<div id="admin-comment-wrapper" class="container d-none">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    {{ 'Admin Comments'|trans({}, 'admincomment.bo.default') }}
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {attr: {id: 'admin-comment-form', action: path('admin_comment_module_create')}}) }}
+
+                        {{ form_widget(form._token) }}
+                        {% do form._token.setRendered %}
+
+                        <input type="hidden" id="admin-comment-admin-id"
+                               name="{{ form.admin_id.vars.full_name }}" value="">
+                        {% do form.admin_id.setRendered %}
+
+                        <input type="hidden" id="admin-comment-form-key"
+                               name="{{ form.element_key.vars.full_name }}" value="">
+                        {% do form.element_key.setRendered %}
+
+                        <input type="hidden" id="admin-comment-form-id"
+                               name="{{ form.element_id.vars.full_name }}" value="">
+                        {% do form.element_id.setRendered %}
+
+                        <div class="mb-3">
+                            <textarea id="admin-comment-form-comment"
+                                      name="{{ form.comment.vars.full_name }}"
+                                      class="form-control" rows="3"></textarea>
+                        </div>
+                        {% do form.comment.setRendered %}
+
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-primary">
+                                {{ 'Save'|trans({}, 'admincomment.bo.default') }}
+                            </button>
+                        </div>
+
+                        {{ form_rest(form) }}
+                    {{ form_end(form, {render_rest: false}) }}
+
+                    <div id="admin-comment-list" class="list-group mt-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Template for a single comment item — cloned by JS #}
+<template id="tpl-admin-comment">
+    <div class="list-group-item" data-id="">
+        <div class="d-flex justify-content-between align-items-start">
+            <h6 class="mb-1 tpl-admin-name fw-bold"></h6>
+            <small class="tpl-admin-date text-muted"></small>
+        </div>
+        <p class="mb-1 tpl-admin-text"></p>
+        <div class="tpl-admin-actions">
+            <div class="tpl-admin-view">
+                <div class="btn-group btn-group-sm mt-1">
+                    <button type="button"
+                            class="btn btn-secondary js-admincomment-edit"
+                            title="{{ 'Edit this comment'|trans({}, 'admincomment.bo.default') }}">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button type="button"
+                            class="btn btn-secondary js-admincomment-delete"
+                            data-action="{{ path('admin_comment_module_delete') }}"
+                            title="{{ 'Delete this comment'|trans({}, 'admincomment.bo.default') }}">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="tpl-admin-edit-form d-none">
+                <form class="admin-comment-update-form mt-2"
+                      method="post"
+                      action="{{ path('admin_comment_module_save') }}">
+                    <input type="hidden"
+                           name="{{ update_form._token.vars.full_name }}"
+                           value="{{ csrf_token(update_form._token.vars.token_id) }}">
+                    <input type="hidden"
+                           class="tpl-update-id"
+                           name="{{ update_form.id.vars.full_name }}"
+                           value="">
+                    <div class="mb-2">
+                        <textarea class="form-control tpl-update-comment"
+                                  name="{{ update_form.comment.vars.full_name }}"
+                                  rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        {{ 'Save'|trans({}, 'admincomment.bo.default') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</template>
+
+{# Warning / info modal #}
+<div class="modal fade" id="admin_comment_dialog" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ 'Message'|trans({}, 'admincomment.bo.default') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>

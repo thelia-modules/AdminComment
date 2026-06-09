@@ -1,0 +1,152 @@
+<script>
+(function () {
+    if (typeof window.adminCommentConfig === 'undefined') {
+        return;
+    }
+
+    var container = document.getElementById('admin-comment-wrapper');
+    var list = document.getElementById('admin-comment-list');
+    var createForm = document.getElementById('admin-comment-form');
+    var inputComment = document.getElementById('admin-comment-form-comment');
+    var inputKey = document.getElementById('admin-comment-form-key');
+    var inputId = document.getElementById('admin-comment-form-id');
+    var adminIdInput = document.getElementById('admin-comment-admin-id');
+    var template = document.getElementById('tpl-admin-comment');
+    var dialog = document.getElementById('admin_comment_dialog');
+
+    container.classList.remove('d-none');
+    inputKey.value = window.adminCommentConfig.key;
+    inputId.value = window.adminCommentConfig.id;
+    if (adminIdInput && window.adminCommentConfig.adminId) {
+        adminIdInput.value = window.adminCommentConfig.adminId;
+    }
+
+    function showMessage(message) {
+        if (dialog) {
+            dialog.querySelector('.modal-body').textContent = message;
+            bootstrap.Modal.getOrCreateInstance(dialog).show();
+        }
+    }
+
+    function buildCommentNode(comment) {
+        var node = template.content.cloneNode(true);
+        var item = node.querySelector('[data-id]');
+        item.dataset.id = comment.id;
+        node.querySelector('.tpl-admin-name').textContent = comment.admin;
+        node.querySelector('.tpl-admin-date').textContent = comment.date;
+        node.querySelector('.tpl-admin-text').textContent = comment.comment;
+
+        if (!comment.canChange) {
+            var actions = node.querySelector('.tpl-admin-actions');
+            if (actions) { actions.remove(); }
+        } else {
+            var deleteBtn = node.querySelector('.js-admincomment-delete');
+            if (deleteBtn) { deleteBtn.dataset.id = comment.id; }
+            var updateIdInput = node.querySelector('.tpl-update-id');
+            if (updateIdInput) { updateIdInput.value = comment.id; }
+            var updateComment = node.querySelector('.tpl-update-comment');
+            if (updateComment) { updateComment.value = comment.comment; }
+        }
+
+        return node;
+    }
+
+    function listComment() {
+        fetch(window.adminCommentConfig.urlList, {headers: {'Accept': 'application/json'}})
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.success) {
+                    list.innerHTML = '';
+                    data.data.forEach(function (comment) {
+                        list.appendChild(buildCommentNode(comment));
+                    });
+                } else {
+                    showMessage(data.message);
+                }
+            })
+            .catch(function (err) { showMessage(err.message || 'Error'); });
+    }
+
+    createForm.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        fetch(createForm.action, {
+            method: 'POST',
+            body: new FormData(createForm),
+            headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}
+        })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.success) {
+                    list.insertBefore(buildCommentNode(data.data), list.firstChild);
+                    inputComment.value = '';
+                } else {
+                    showMessage(data.message);
+                }
+            })
+            .catch(function (err) { showMessage(err.message || 'Error'); });
+    });
+
+    list.addEventListener('click', function (ev) {
+        var deleteBtn = ev.target.closest('.js-admincomment-delete');
+        if (deleteBtn) {
+            var params = new URLSearchParams();
+            params.append('id', deleteBtn.dataset.id);
+            fetch(deleteBtn.dataset.action, {
+                method: 'POST',
+                body: params,
+                headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded'}
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.success) {
+                        var item = deleteBtn.closest('[data-id]');
+                        if (item) { item.remove(); }
+                    } else {
+                        showMessage(data.message);
+                    }
+                })
+                .catch(function (err) { showMessage(err.message || 'Error'); });
+            return;
+        }
+
+        var editBtn = ev.target.closest('.js-admincomment-edit');
+        if (editBtn) {
+            var item = editBtn.closest('[data-id]');
+            if (item) {
+                item.querySelector('.tpl-admin-view').classList.add('d-none');
+                item.querySelector('.tpl-admin-text').classList.add('d-none');
+                item.querySelector('.tpl-admin-edit-form').classList.remove('d-none');
+            }
+        }
+    });
+
+    list.addEventListener('submit', function (ev) {
+        var updateForm = ev.target.closest('.admin-comment-update-form');
+        if (!updateForm) { return; }
+        ev.preventDefault();
+
+        fetch(updateForm.action, {
+            method: 'POST',
+            body: new FormData(updateForm),
+            headers: {'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest'}
+        })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.success) {
+                    var item = updateForm.closest('[data-id]');
+                    if (item) {
+                        item.querySelector('.tpl-admin-text').textContent = data.data.comment;
+                        item.querySelector('.tpl-admin-text').classList.remove('d-none');
+                        item.querySelector('.tpl-admin-view').classList.remove('d-none');
+                        item.querySelector('.tpl-admin-edit-form').classList.add('d-none');
+                    }
+                } else {
+                    showMessage(data.message);
+                }
+            })
+            .catch(function (err) { showMessage(err.message || 'Error'); });
+    });
+
+    listComment();
+})();
+</script>
