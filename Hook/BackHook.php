@@ -108,8 +108,25 @@ class BackHook extends BaseHook
             $this->render('main-after-content.html.twig', [
                 'form' => $createForm->createView()->getView(),
                 'update_form' => $updateForm->createView()->getView(),
+                'labels' => $this->boLabels(),
             ])
         );
+    }
+
+    // Translated server-side: the default-twig Twig |trans uses the Symfony translator, which
+    // does not know the module domains, so rendering in the template falls back to English.
+    private function boLabels(): array
+    {
+        $translator = Translator::getInstance();
+        $domain = 'admincomment.bo.default';
+
+        return [
+            'admin_comments' => $translator->trans('Admin Comments', [], $domain),
+            'save' => $translator->trans('Save', [], $domain),
+            'edit' => $translator->trans('Edit this comment', [], $domain),
+            'delete' => $translator->trans('Delete this comment', [], $domain),
+            'message' => $translator->trans('Message', [], $domain),
+        ];
     }
 
     public function onMainFooterJs(HookRenderEvent $event): void
@@ -134,9 +151,13 @@ class BackHook extends BaseHook
     {
         $params = $this->getTabParameters($event);
 
+        if (empty($params['key'])) {
+            return;
+        }
+
         $count = AdminCommentQuery::create()
             ->filterByElementKey($params['key'])
-            ->filterByElementId($event->getArgument('id'))
+            ->filterByElementId((int) $event->getArgument('id'))
             ->count();
 
         $event->add([

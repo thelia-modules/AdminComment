@@ -10,16 +10,12 @@
     var inputComment = document.getElementById('admin-comment-form-comment');
     var inputKey = document.getElementById('admin-comment-form-key');
     var inputId = document.getElementById('admin-comment-form-id');
-    var adminIdInput = document.getElementById('admin-comment-admin-id');
     var template = document.getElementById('tpl-admin-comment');
     var dialog = document.getElementById('admin_comment_dialog');
 
     container.classList.remove('d-none');
     inputKey.value = window.adminCommentConfig.key;
     inputId.value = window.adminCommentConfig.id;
-    if (adminIdInput && window.adminCommentConfig.adminId) {
-        adminIdInput.value = window.adminCommentConfig.adminId;
-    }
 
     function showMessage(message) {
         if (dialog) {

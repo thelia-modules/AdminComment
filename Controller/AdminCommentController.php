@@ -141,6 +141,12 @@ class AdminCommentController extends BaseAdminController
             $event = new AdminCommentEvent();
             $event->bindForm($formData);
 
+            // The comment author is the logged-in administrator, never a submitted value.
+            $adminUser = $securityContext->getAdminUser();
+            if (null !== $adminUser) {
+                $event->setAdminId($adminUser->getId());
+            }
+
             $eventDispatcher->dispatch($event, $eventName);
 
             $responseData['success'] = true;

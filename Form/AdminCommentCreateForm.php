@@ -14,7 +14,6 @@
 namespace AdminComment\Form;
 
 use AdminComment\AdminComment;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -63,16 +62,6 @@ class AdminCommentCreateForm extends BaseForm
     {
         $this
             ->formBuilder
-            ->add(
-                "admin_id",
-                IntegerType::class,
-                [
-                    "label" => $this->trans("Admin Id"),
-                    "constraints" => [
-                        new NotBlank()
-                    ]
-                ]
-            )
             ->add(
                 "element_key",
                 TextType::class,
