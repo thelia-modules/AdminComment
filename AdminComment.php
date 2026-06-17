@@ -24,12 +24,12 @@ class AdminComment extends BaseModule
 
     public function postActivation(ConnectionInterface $con = null): void
     {
-        // Schema
-        try {
-            AdminCommentQuery::create()->findOne();
-        } catch (\Exception $ex) {
-            $database = new Database($con->getWrappedConnection());
-            $database->insertSql(null, [__DIR__ . DS . 'Config' . DS . 'thelia.sql']);
+        if (!$this->getConfigValue('is_initialized', false)) {
+            $database = new Database($con);
+
+            $database->insertSql(null, array(__DIR__ . '/Config/thelia.sql'));
+
+            $this->setConfigValue('is_initialized', true);
         }
     }
 
