@@ -13,6 +13,15 @@
     var template = document.getElementById('tpl-admin-comment');
     var dialog = document.getElementById('admin_comment_dialog');
 
+    // The block is rendered through the global main.after-content hook, so it lands at the very
+    // bottom of the page. When the current edit screen exposes a dedicated "Comment" tab (added by
+    // the *.tab hook), move the block inside that tab pane instead of leaving it dangling below the
+    // page. Screens without such a tab (customer, coupon) keep the block at the bottom.
+    var tabPane = document.getElementById('admin-comment');
+    if (tabPane && container) {
+        tabPane.appendChild(container);
+    }
+
     container.classList.remove('d-none');
     inputKey.value = window.adminCommentConfig.key;
     inputId.value = window.adminCommentConfig.id;
