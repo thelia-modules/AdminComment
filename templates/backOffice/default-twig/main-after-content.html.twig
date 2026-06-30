@@ -60,7 +60,7 @@
                     </button>
                     <button type="button"
                             class="btn btn-secondary js-admincomment-delete"
-                            data-action="{{ path('admin_comment_module_delete') }}"
+                            data-action="{{ path('admin_comment_module_delete') }}?_token={{ assignToken() }}"
                             title="{{ labels.delete }}">
                         <i class="bi bi-trash"></i>
                     </button>

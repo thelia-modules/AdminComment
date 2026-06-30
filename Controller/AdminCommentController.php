@@ -30,6 +30,7 @@ use Thelia\Core\Security\SecurityContext;
 use Thelia\Core\Translation\Translator;
 use Thelia\Form\Exception\FormValidationException;
 use Thelia\Tools\DateTimeFormat;
+use Thelia\Tools\TokenProvider;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
@@ -185,7 +186,7 @@ class AdminCommentController extends BaseAdminController
     /**
      */
     #[Route('/delete', name: '_delete', methods: ['POST'])]
-    public function deleteAction(RequestStack $requestStack, Translator $translator, EventDispatcherInterface $eventDispatcher)
+    public function deleteAction(RequestStack $requestStack, Translator $translator, EventDispatcherInterface $eventDispatcher, TokenProvider $tokenProvider)
     {
         $response = $this->checkAuth([], [AdminComment::getModuleCode()], AccessManager::DELETE);
         if (null !== $response) {
@@ -194,13 +195,16 @@ class AdminCommentController extends BaseAdminController
 
         $this->checkXmlHttpRequest();
 
+        $request = $requestStack->getCurrentRequest();
+        $tokenProvider->checkToken((string) $request->query->get('_token'));
+
         $responseData = [
             "success" => false,
             "message" => ''
         ];
 
         try {
-            $id = (int)$requestStack->getCurrentRequest()->request->get('id');
+            $id = (int)$request->request->get('id');
 
             if (0 === $id) {
                 throw new \RuntimeException(
