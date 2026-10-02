@@ -104,7 +104,7 @@
                 .then(function (r) { return r.json(); })
                 .then(function (data) {
                     if (data.success) {
-                        var item = deleteBtn.closest('[data-id]');
+                        var item = deleteBtn.closest('.list-group-item');
                         if (item) { item.remove(); }
                     } else {
                         showMessage(data.message);
@@ -116,7 +116,7 @@
 
         var editBtn = ev.target.closest('.js-admincomment-edit');
         if (editBtn) {
-            var item = editBtn.closest('[data-id]');
+            var item = editBtn.closest('.list-group-item');
             if (item) {
                 item.querySelector('.tpl-admin-view').classList.add('d-none');
                 item.querySelector('.tpl-admin-text').classList.add('d-none');
@@ -138,7 +138,7 @@
             .then(function (r) { return r.json(); })
             .then(function (data) {
                 if (data.success) {
-                    var item = updateForm.closest('[data-id]');
+                    var item = updateForm.closest('.list-group-item');
                     if (item) {
                         item.querySelector('.tpl-admin-text').textContent = data.data.comment;
                         item.querySelector('.tpl-admin-text').classList.remove('d-none');
