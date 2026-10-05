@@ -96,6 +96,7 @@
         if (deleteBtn) {
             var params = new URLSearchParams();
             params.append('id', deleteBtn.dataset.id);
+            params.append('_token', deleteBtn.dataset.token);
             fetch(deleteBtn.dataset.action, {
                 method: 'POST',
                 body: params,
