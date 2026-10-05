@@ -196,7 +196,7 @@ class AdminCommentController extends BaseAdminController
         $this->checkXmlHttpRequest();
 
         $request = $requestStack->getCurrentRequest();
-        $tokenProvider->checkToken((string) $request->query->get('_token'));
+        $tokenProvider->checkToken((string) $request->request->get('_token'));
 
         $responseData = [
             "success" => false,
